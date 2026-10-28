@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Share Undangan WA Yuka & Zacky</title>
+    <title>Share Undangan WA & IG Yuka & Zacky</title>
     <style>
         body { font-family: system-ui, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; background: #fdfbf7; }
-        textarea { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 8px; }
-        button.btn-generate { background: #8b263e; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
+        textarea { width: 100%; padding: 10px; border: 1px solid #d4af37; border-radius: 8px; box-sizing: border-box; }
+        button.btn-generate { background: #8b263e; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; font-size: 16px;}
         button.btn-generate:hover { background: #721d31; }
-        .list-container { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .card { padding: 15px; border: 1px solid #ddd; background: white; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-wa { background: #25D366; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
+        .list-container { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .card { padding: 15px; border: 1px solid #ddd; background: white; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; }
+        @media (min-width: 600px) {
+            .card { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+        .action-buttons { display: flex; gap: 8px; }
+        .btn-wa { background: #25D366; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; text-align: center; flex: 1; font-size: 14px; display: flex; justify-content: center; align-items: center;}
+        .btn-ig { background: #E1306C; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 1; font-size: 14px; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <h2 style="color: #8b263e;">Generator Pesan WA Undangan</h2>
+    <h2 style="color: #8b263e;">Generator Pesan Undangan (WA & IG)</h2>
     <p>Paste daftar nama tamu di bawah ini (satu baris satu nama):</p>
     
-    <textarea id="namaTamu" rows="10">
-    Masukan Nama tamu disini
+    <textarea id="namaTamu" rows="8">harjimat, S.Pd
     </textarea>
     
-    <button class="btn-generate" onclick="buatLink()">Buat Tombol Share WA</button>
+    <button class="btn-generate" onclick="buatLink()">Buat Tombol Share</button>
 
     <div class="list-container" id="hasilTamu"></div>
 
@@ -38,8 +42,8 @@
                 const cleanName = name.trim();
                 const urlName = encodeURIComponent(cleanName);
                 
-                // Format Pesan Undangan (Tinggal disesuaikan jika perlu)
-                const textWA = `بِسْــــــــــــــمِ اللهِ الرَّحْمَنِ الرَّحِيْـــــم
+                // Format Pesan Undangan
+                const textUndangan = `بِسْــــــــــــــمِ اللهِ الرَّحْمَنِ الرَّحِيْـــــم
 
 ✨ UNDANGAN PERNIKAHAN ✨
 
@@ -63,14 +67,46 @@ Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir
 
 Jazaakumullah Khairan Katsiran 🤲`;
 
-                const linkWA = `https://wa.me/?text=${encodeURIComponent(textWA)}`;
+                const linkWA = `https://wa.me/?text=${encodeURIComponent(textUndangan)}`;
 
+                // Bikin Elemen Card
                 const card = document.createElement("div");
                 card.className = "card";
-                card.innerHTML = `
-                    <span style="font-weight: 600;">${cleanName}</span>
-                    <a href="${linkWA}" target="_blank" class="btn-wa">Share WA ➔</a>
-                `;
+
+                const nameSpan = document.createElement("span");
+                nameSpan.style.fontWeight = "600";
+                nameSpan.innerText = cleanName;
+
+                const actionDiv = document.createElement("div");
+                actionDiv.className = "action-buttons";
+
+                // Tombol Salin IG
+                const btnIG = document.createElement("button");
+                btnIG.className = "btn-ig";
+                btnIG.innerText = "Salin (IG/DM)";
+                btnIG.onclick = () => {
+                    navigator.clipboard.writeText(textUndangan).then(() => {
+                        btnIG.innerText = "Tersalin! ✅";
+                        btnIG.style.background = "#d4af37"; // Ubah warna jadi emas saat tersalin
+                        setTimeout(() => {
+                            btnIG.innerText = "Salin (IG/DM)";
+                            btnIG.style.background = "#E1306C"; // Kembali ke warna IG
+                        }, 2000);
+                    });
+                };
+
+                // Tombol WA
+                const btnWA = document.createElement("a");
+                btnWA.href = linkWA;
+                btnWA.target = "_blank";
+                btnWA.className = "btn-wa";
+                btnWA.innerText = "Share WA ➔";
+
+                actionDiv.appendChild(btnIG);
+                actionDiv.appendChild(btnWA);
+                card.appendChild(nameSpan);
+                card.appendChild(actionDiv);
+                
                 container.appendChild(card);
             });
         }
